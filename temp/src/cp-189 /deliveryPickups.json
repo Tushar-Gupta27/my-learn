@@ -1,0 +1,627 @@
+{
+    "date": "2023-06-19",
+    "leaderId": "da7d7a76-f87a-4ca1-bd67-d9f22e30022a",
+    "delayTimeInHours": 24,
+    "tasksCount": {
+      "customers": 5,
+      "delayedCustomers": 8,
+      "completedCustomers": 3
+    },
+    "refunds_overview": {
+      "Delay": 0,
+      "Total": 0,
+      "Pending": 0,
+      "Completed": 0
+    },
+    "bannersToShow": [
+      "PENDING_DELIVERY"
+    ],
+    "customers": [
+      {
+        "user_id": "4463472",
+        "user_name": "md amjad ali",
+        "phone_number": "9110163303",
+        "address": "H.no 104 Vijay Bihar Star moll Selokhera rod GURGAON 122001",
+        "cx_lat": "28.4623043",
+        "cx_lng": "77.0558834",
+        "distance": "353m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 0,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 453,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32538178",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:32:53.496Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 453,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SF654497996CMU"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "21965461",
+        "user_name": "Devendra singh",
+        "phone_number": "9953675486",
+        "address": "Sez silokhara Sec.30 Ster mall GURGAON 122022",
+        "cx_lat": "28.4623079014112",
+        "cx_lng": "77.0560946501791",
+        "distance": "350m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 0,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "pay_by_cx": 505,
+        "delivery_overview": {
+          "pay_by_cx": 505,
+          "count": 2
+        },
+        "delivery": [
+          {
+            "order_id": "32675475",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:30.325Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 209.1,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "LA0002980630"
+            ],
+            "count": 1,
+            "is_otp_enabled": true,
+            "//comment_show_unmark_delivery_btn": false
+          },
+          {
+            "order_id": "32675476",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:30.325Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 295.9,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "LA0002979786"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "29873139",
+        "user_name": "Bhuneshwar kushwaha ",
+        "phone_number": "9717909367",
+        "address": "Bhuneshwar  Silokhra sector 41 shiv mandir Govt school  GURGAON 122022",
+        "cx_lat": "28.4624557",
+        "cx_lng": "77.0678656",
+        "distance": "1km",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 0,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 299,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32716831",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:07.995Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 299,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "LA0002988440"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "30796300",
+        "user_name": "OMKAR Shah ",
+        "phone_number": "9717562994",
+        "address": "Hariraj building Street number 6 Silokhara South City 1 Near University GURGAON 122022",
+        "cx_lat": "28.4575313",
+        "cx_lng": "77.0610132",
+        "distance": "474m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 0,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 236.5,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32665005",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:55.947Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 236.5,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037263439"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      }
+    ],
+    "delayedCustomers": [
+      {
+        "user_id": "277338",
+        "user_name": "Rita Gupta",
+        "phone_number": "9811231004",
+        "address": "O12 south city 1 first floor  Near sector 40 Sector 40 police station  GURGAON 122022",
+        "cx_lat": "28.4511886",
+        "cx_lng": "77.0591034",
+        "distance": "924m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 405,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32652170",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 405,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037236931",
+              "SA0037239265"
+            ],
+            "count": 2,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "2876749",
+        "user_name": "Monika",
+        "phone_number": "8178185114",
+        "address": "G 114 Besment  G block Sec 40  Near mothers pride School GURGAON 122022",
+        "cx_lat": "28.4488484",
+        "cx_lng": "77.0589044",
+        "distance": "1km",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 216,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32608789",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 216,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037207537"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "3568997",
+        "user_name": "Sangeeta",
+        "phone_number": "8587890796",
+        "address": "Welcome PG  Moti bihar (silokhra) GURGAON 122002",
+        "cx_lat": "28.4573012",
+        "cx_lng": "77.0605462",
+        "distance": "444m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 127,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32604177",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 127,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037207571"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "10290729",
+        "user_name": "Manish",
+        "phone_number": "7011061853",
+        "address": "House no. 125 near ekta apartment sec 39 jhasa gurugram Jharsa sec 39 Ekta apartment sec 39  GURGAON 122001",
+        "cx_lat": "28.4451435",
+        "cx_lng": "77.0514443",
+        "distance": "2km",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "pay_by_cx": 1272,
+        "delivery_overview": {
+          "pay_by_cx": 1272,
+          "count": 2
+        },
+        "delivery": [
+          {
+            "order_id": "32645375",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 129,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037236386"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          },
+          {
+            "order_id": "32645513",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 1143,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037237135",
+              "SA0037237137",
+              "SA0037237138",
+              "SA0037237139",
+              "SA0037237136"
+            ],
+            "count": 5,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "24890843",
+        "user_name": "Jyotsna bhunia",
+        "phone_number": "9654020963",
+        "address": "DLF World tech park, N.H- 8  Sec-30 Star mall GURGAON 122001",
+        "cx_lat": "28.4650778",
+        "cx_lng": "77.0577834",
+        "distance": "666m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "pay_by_cx": 1093.5,
+        "delivery_overview": {
+          "pay_by_cx": 1093.5,
+          "count": 2
+        },
+        "delivery": [
+          {
+            "order_id": "32600547",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 758.5,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037201686",
+              "SA0037186729",
+              "SA0037186730",
+              "SA0037186731"
+            ],
+            "count": 4,
+            "is_otp_enabled": true
+          },
+          {
+            "order_id": "32600549",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 335,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "LA0002971803"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      },
+      {
+        "user_id": "30999648",
+        "user_name": "Rakhi Arun",
+        "phone_number": "8630336124",
+        "address": "Star homes plot n. 170 Sector 30 vijay vihar  GURGAON 122022",
+        "cx_lat": "28.4589731",
+        "cx_lng": "77.0558798",
+        "distance": "69m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 206,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32630133",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 206,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037210455"
+            ],
+            "count": 1,
+            "is_otp_enabled": true
+          }
+        ]
+      }
+    ],
+    "completedCustomers": [
+      {
+        "user_id": "2741011",
+        "user_name": "Skateboard ",
+        "phone_number": "8130679568",
+        "address": "Hari Raj g. no 6 Silokhara HarRaj  GURGAON 122101",
+        "cx_lat": "28.3702384630107",
+        "cx_lng": "77.0798915438354",
+        "distance": "10km",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 256.5,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32617355",
+            "delivered_to_cx_at": "2023-06-19T05:46:30.861Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 256.5,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037212170",
+              "SA0037207463"
+            ],
+            "count": 2
+          }
+        ]
+      },
+      {
+        "user_id": "21377166",
+        "user_name": "Mukesh",
+        "phone_number": "9891533376",
+        "address": "नियर डंजों स्टोर शॉप नंबर 4 साउथ सिटी मार्केट  मायम हॉस्पिटल GURGAON 122022",
+        "cx_lat": "28.4585090744257",
+        "cx_lng": "77.0626627095044",
+        "distance": "603m",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 259,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32557432",
+            "delivered_to_cx_at": "2023-06-19T06:16:14.989Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 259,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "MA0001858255"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "2272193",
+        "user_name": "Abdul king ",
+        "phone_number": "7701824823",
+        "address": "South city 1 Silokhra  gurugram Sugam ngo school   41 Sugam Ngo School   GURGAON 122022",
+        "cx_lat": "28.4566099050233",
+        "cx_lng": "77.0617423765361",
+        "distance": "583m",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 0,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 512,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32683477",
+            "delivered_to_cx_at": "2023-06-19T05:56:47.809Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:21.338Z",
+            "delay_count_in_hours": 0,
+            "payment_mode": "COD",
+            "amount": 512,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037265219",
+              "SA0037265220"
+            ],
+            "count": 2
+          }
+        ]
+      }
+    ],
+    "carousel": [
+      {
+        "name": "PENDING_DELIVERY",
+        "heading": "समय पर डिलीवर करें ",
+        "desc": "आपको ऑर्डर 24 घंटे के भीतर कस्टमर को डिलीवर करना है| ऐसा नहीं करने पर आपको कमीशन नहीं मिलेगा|और आपकी रेटिंग्स पर भी असर पड़ेगा|",
+        "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1666256807315-refund.png",
+        "bgColor": "#E6F7EE",
+        "borderColor": "rgba(0, 171, 89, 0.6)"
+      }
+    ],
+    "popups": {
+      "confirmCancelPickup": {
+        "heading": "कैंसिल रिटर्न पिकअप ",
+        "message": "क्या आप रिटर्न पिकअप कैंसिल करना चाहते हैं? बिना कस्टमर की सहमति के कैंसिल करने पर आपके खिलाफ कंप्लेंट रजिस्टर की जाएगी| ",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      },
+      "confirmPickup": {
+        "heading": "कस्टमर से पिकअप ",
+        "message": "कस्टमर से आइटम रिटर्न के लिए पिक कर लिया है? कस्टमर से रिटर्न पिकअप मार्क करते ही डिलीवरी बॉय द्वारा आइटम आपसे पिक किया जायेगा|",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      },
+      "confirmDelivery": {
+        "heading": "मार्क डिलीवरी ",
+        "message": "क्या आपने कस्टमर को ऑर्डर डिलीवर कर दिया है? अगर आप डिलीवर किये बिना मार्क डिलीवरी करते हैं, तब आपको कमीशन नहीं मिलेगा| ",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      }
+    }
+  }

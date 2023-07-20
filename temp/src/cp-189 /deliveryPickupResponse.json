@@ -1,0 +1,661 @@
+{
+    "date": "2023-06-21",
+    "leaderId": "da7d7a76-f87a-4ca1-bd67-d9f22e30022a",
+    "delayTimeInHours": 24,
+    "tasksCount": {
+      "customers": 5,
+      "delayedCustomers": 1,
+      "completedCustomers": 9
+    },
+    "refunds_overview": {
+      "Delay": 0,
+      "Total": 0,
+      "Pending": 0,
+      "Completed": 2
+    },
+    "bannersToShow": [
+      "PENDING_DELIVERY",
+      "PENDING_PICKUP"
+    ],
+    "customers": [
+      {
+        "user_id": "30999648",
+        "user_name": "Rakhi Arun",
+        "address": "Star homes plot n. 170 Sector 30 vijay vihar  GURGAON 122022",
+        "phone_number": "8630336124",
+        "includes_pending_pickups": true,
+        "includes_cod_pickups": true,
+        "max_delay_count_in_hours": 0,
+        "cx_lat": "28.4589731",
+        "cx_lng": "77.0558798",
+        "distance": "69m",
+        "pickups_overview": {
+          "pay_by_cx": -206,
+          "count": 7
+        },
+        "pickups": [
+          {
+            "return_req_id": "3024292",
+            "status": "PENDING_PICKUP_FROM_CX",
+            "picked_from_cx_at": null,
+            "payment_mode": "COD",
+            "amount": 206,
+            "count": 7,
+            "delay_count_in_hours": 0,
+            "return_req_items": [
+              {
+                "slug": "vrd-lal-mirch-powder-100gm-buy-1-get-1-free",
+                "amount": 65,
+                "quantity": 1,
+                "short_name": "VRD लाल मिर्च पाउडर 100 g (1 के साथ 1 मुफ्त)",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-dedc491b-f323-4805-968d-2a124647ba62.webp"
+              },
+              {
+                "slug": "catch-meat-masala-8-gpopgzqtkvavybnurfejrdj",
+                "amount": 10,
+                "quantity": 2,
+                "short_name": "कैच मीट मसाला 7 g",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-759eee76-f88d-41ee-83f0-49d564583faa.png"
+              },
+              {
+                "slug": "sr-haldi-powder-200-g9jtpujaqdpdz2pce5a1a19",
+                "amount": 37,
+                "quantity": 1,
+                "short_name": "SR हल्दी पाउडर 200 g",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-8fc713e2-8ac1-4fc2-8965-1cffe3ca216f.jpeg"
+              },
+              {
+                "slug": "eagle-super-garam-masala-100-g",
+                "amount": 34,
+                "quantity": 1,
+                "short_name": "ईगल सुपर गरम मसाला 100 g",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-a5dc0c1b-d11e-4ef2-aa08-7c9b0a4cb91e.webp"
+              },
+              {
+                "slug": "os-matar-paneer-13-g9tahwtmhq8jgj9nfyfsylx",
+                "amount": 10,
+                "quantity": 1,
+                "short_name": "O.S मटर पनीर 13 g",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-6cba00cd-de8a-4d73-8492-94ebfcc296f3.webp"
+              },
+              {
+                "slug": "sunfeast-mom-s-magic-rich-butter-cookies-3x150g-buy-2-get-1-free",
+                "amount": 50,
+                "quantity": 1,
+                "short_name": "सनफीस्ट मॉम्स मैजिक रिच बटर कूकीज 3X150 g (2 के साथ 1 मुफ्त)",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-3cc5e678-4dd2-49d9-aa98-919c2da9182f.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "user_id": "9553052",
+        "user_name": "Manoj Kumar ",
+        "address": "House no 103 Silokhera south city-1  Welcome PG  GURGAON 122022",
+        "phone_number": "8920577831",
+        "includes_pending_pickups": true,
+        "includes_cod_pickups": true,
+        "max_delay_count_in_hours": 0,
+        "cx_lat": "28.4583514",
+        "cx_lng": "77.0605803",
+        "distance": "405m",
+        "pickups_overview": {
+          "pay_by_cx": -369,
+          "count": 1
+        },
+        "pickups": [
+          {
+            "return_req_id": "3024294",
+            "status": "PENDING_PICKUP_FROM_CX",
+            "picked_from_cx_at": null,
+            "payment_mode": "COD",
+            "amount": 369,
+            "count": 1,
+            "delay_count_in_hours": 0,
+            "return_req_items": [
+              {
+                "slug": "fortune-chakki-fresh-atta-10-kg",
+                "amount": 369,
+                "quantity": 1,
+                "short_name": "फार्च्यून चक्की फ्रेश आटा 10 kg",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-7b4b4ffd-d06e-4685-bcc5-cf3c1ff32aad.webp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "user_id": "21965461",
+        "user_name": "Devendra singh",
+        "address": "Sez silokhara Sec.30 Ster mall GURGAON 122022",
+        "phone_number": "9953675486",
+        "includes_pending_pickups": true,
+        "includes_cod_pickups": true,
+        "max_delay_count_in_hours": 0,
+        "cx_lat": "28.4623079014112",
+        "cx_lng": "77.0560946501791",
+        "distance": "350m",
+        "pickups_overview": {
+          "pay_by_cx": -295.9,
+          "count": 1
+        },
+        "pickups": [
+          {
+            "return_req_id": "3021373",
+            "status": "PENDING_PICKUP_FROM_CX",
+            "picked_from_cx_at": null,
+            "payment_mode": "COD",
+            "amount": 295.9,
+            "count": 1,
+            "delay_count_in_hours": 0,
+            "return_req_items": [
+              {
+                "slug": "anaj-dhan-chakki-atta-10kg",
+                "amount": 295.9,
+                "quantity": 1,
+                "short_name": "अनाज धन चक्की आटा 10 kg",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-581de0af-413e-4a9a-882d-618b1af511ef.jpg"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "user_id": "1707895",
+        "user_name": "Anil kumar mishra ",
+        "address": "Hari Raj home South City 1 Opposite Agrawal kirana Gurgaon haryana GURGAON 122001",
+        "phone_number": "9582939135",
+        "includes_pending_pickups": true,
+        "includes_cod_pickups": true,
+        "max_delay_count_in_hours": 0,
+        "cx_lat": "28.457257",
+        "cx_lng": "77.061498",
+        "distance": "530m",
+        "pickups_overview": {
+          "pay_by_cx": -113,
+          "count": 1
+        },
+        "pickups": [
+          {
+            "return_req_id": "3021404",
+            "status": "PENDING_PICKUP_FROM_CX",
+            "picked_from_cx_at": null,
+            "payment_mode": "COD",
+            "amount": 113,
+            "count": 1,
+            "delay_count_in_hours": 0,
+            "return_req_items": [
+              {
+                "slug": "fortune-refined-soya-health-oil-1l-(bottle)",
+                "amount": 113,
+                "quantity": 1,
+                "short_name": "फार्च्यून सोया हेल्थ रिफाइंड सोयाबीन तेल 1 L (पाउच)",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-93a8574c-5a6a-4883-b236-59c0fc172157.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "user_id": "277338",
+        "user_name": "Rita Gupta",
+        "address": "O12 south city 1 first floor  Near sector 40 Sector 40 police station  GURGAON 122022",
+        "phone_number": "9811231004",
+        "includes_pending_pickups": true,
+        "includes_cod_pickups": true,
+        "max_delay_count_in_hours": 0,
+        "cx_lat": "28.4511886",
+        "cx_lng": "77.0591034",
+        "distance": "924m",
+        "pickups_overview": {
+          "pay_by_cx": -74,
+          "count": 1
+        },
+        "pickups": [
+          {
+            "return_req_id": "3021443",
+            "status": "PENDING_PICKUP_FROM_CX",
+            "picked_from_cx_at": null,
+            "payment_mode": "COD",
+            "amount": 74,
+            "count": 1,
+            "delay_count_in_hours": 0,
+            "return_req_items": [
+              {
+                "slug": "eagle-chana-masala-100-g-buy-1-get-1-free",
+                "amount": 74,
+                "quantity": 1,
+                "short_name": "ईगल चना मसाला 100 g (1 के साथ 1 मुफ्त)",
+                "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-89dd2ced-2067-41cb-9d3b-1475193feb1b.png"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delayedCustomers": [
+      {
+        "user_id": "3568997",
+        "user_name": "Sangeeta",
+        "phone_number": "8587890796",
+        "address": "Welcome PG  Moti bihar (silokhra) GURGAON 122002",
+        "cx_lat": "28.4573012",
+        "cx_lng": "77.0605462",
+        "distance": "444m",
+        "includes_pending_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 232,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32728468",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "PENDING_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-20T06:57:26.481Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 232,
+            "is_cx_complaint_raised": false,
+            "is_otp_enabled": true,
+            "shipments_list": [
+              "SA0037340219"
+            ],
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "completedCustomers": [
+      {
+        "user_id": "2876749",
+        "user_name": "Monika",
+        "phone_number": "8178185114",
+        "address": "G 114 Besment  G block Sec 40  Near mothers pride School GURGAON 122022",
+        "cx_lat": "28.4488484",
+        "cx_lng": "77.0589044",
+        "distance": "1km",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 45,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 216,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32608789",
+            "delivered_to_cx_at": "2023-06-20T09:23:22.599Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 45,
+            "payment_mode": "COD",
+            "amount": 216,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037207537"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "10290729",
+        "user_name": "Manish",
+        "phone_number": "7011061853",
+        "address": "House no. 125 near ekta apartment sec 39 jhasa gurugram Jharsa sec 39 Ekta apartment sec 39  GURGAON 122001",
+        "cx_lat": "28.4451435",
+        "cx_lng": "77.0514443",
+        "distance": "2km",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 45,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "pay_by_cx": 1469,
+        "delivery_overview": {
+          "pay_by_cx": 1469,
+          "count": 3
+        },
+        "delivery": [
+          {
+            "order_id": "32645375",
+            "delivered_to_cx_at": "2023-06-20T10:59:54.959Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 45,
+            "payment_mode": "COD",
+            "amount": 129,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037236386"
+            ],
+            "count": 1
+          },
+          {
+            "order_id": "32645513",
+            "delivered_to_cx_at": "2023-06-20T11:00:02.959Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-18T10:42:41.464Z",
+            "delay_count_in_hours": 45,
+            "payment_mode": "COD",
+            "amount": 1143,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037237135",
+              "SA0037237137",
+              "SA0037237138",
+              "SA0037237139",
+              "SA0037237136"
+            ],
+            "count": 5
+          },
+          {
+            "order_id": "32693888",
+            "delivered_to_cx_at": "2023-06-20T11:00:08.578Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-20T06:57:26.481Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 197,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037308570"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "29873139",
+        "user_name": "Bhuneshwar kushwaha ",
+        "phone_number": "9717909367",
+        "address": "Bhuneshwar  Silokhra sector 41 shiv mandir Govt school  GURGAON 122022",
+        "cx_lat": "28.4624557",
+        "cx_lng": "77.0678656",
+        "distance": "1km",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 26,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 299,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32716831",
+            "delivered_to_cx_at": "2023-06-20T11:20:23.745Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:07.995Z",
+            "delay_count_in_hours": 26,
+            "payment_mode": "COD",
+            "amount": 299,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "LA0002988440"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "30796300",
+        "user_name": "OMKAR Shah ",
+        "phone_number": "9717562994",
+        "address": "Hariraj building Street number 6 Silokhara South City 1 Near University GURGAON 122022",
+        "cx_lat": "28.4575313",
+        "cx_lng": "77.0610132",
+        "distance": "474m",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 26,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 236.5,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32665005",
+            "delivered_to_cx_at": "2023-06-20T11:16:46.670Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-19T05:31:55.947Z",
+            "delay_count_in_hours": 26,
+            "payment_mode": "COD",
+            "amount": 236.5,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037263439"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "4271035",
+        "user_name": "Ajay yadav",
+        "phone_number": "9520767190",
+        "address": "473 473,sector31gurugram Sector 31 market GURGAON 122001",
+        "cx_lat": "28.4548878502806",
+        "cx_lng": "77.0516525767744",
+        "distance": "676m",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "pay_by_cx": 370,
+        "delivery_overview": {
+          "pay_by_cx": 370,
+          "count": 2
+        },
+        "delivery": [
+          {
+            "order_id": "32722807",
+            "delivered_to_cx_at": "2023-06-20T09:21:28.951Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-20T06:57:26.481Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 184,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037351703"
+            ],
+            "count": 1
+          },
+          {
+            "order_id": "32733361",
+            "delivered_to_cx_at": "2023-06-20T09:21:40.764Z",
+            "cx_rto_raised_at": null,
+            "return_req_id": null,
+            "status": "MARKED_DELIVERY_TO_CX",
+            "delivered_to_cl_at": "2023-06-20T06:57:26.481Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 186,
+            "is_cx_complaint_raised": false,
+            "shipments_list": [
+              "SA0037349456"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user_id": "9553052",
+        "user_name": "Manoj Kumar ",
+        "phone_number": "8920577831",
+        "address": "House no 103 Silokhera south city-1  Welcome PG  GURGAON 122022",
+        "cx_lat": "28.4583514",
+        "cx_lng": "77.0605803",
+        "distance": "405m",
+        "includes_completed_deliveries": true,
+        "includes_cod_delivery": true,
+        "max_delay_count_in_hours": 1,
+        "cl_lat": "28.4591878",
+        "cl_lng": "77.0565468",
+        "delivery_overview": {
+          "pay_by_cx": 295,
+          "count": 1
+        },
+        "delivery": [
+          {
+            "order_id": "32779311",
+            "delivered_to_cx_at": null,
+            "cx_rto_raised_at": "2023-06-20T15:44:11.340Z",
+            "return_req_id": "3020362",
+            "status": "MARKED_FULL_RTO",
+            "delivered_to_cl_at": "2023-06-20T06:57:26.481Z",
+            "delay_count_in_hours": 1,
+            "payment_mode": "COD",
+            "amount": 295,
+            "is_cx_complaint_raised": false,
+            "is_otp_enabled": true,
+            "shipments_list": [
+              "LA0003001066"
+            ],
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "carousel": [
+      {
+        "name": "PENDING_DELIVERY",
+        "heading": "समय पर डिलीवर करें ",
+        "desc": "आपको ऑर्डर 24 घंटे के भीतर कस्टमर को डिलीवर करना है| ऐसा नहीं करने पर आपको कमीशन नहीं मिलेगा|और आपकी रेटिंग्स पर भी असर पड़ेगा|",
+        "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1666256807315-refund.png",
+        "bgColor": "#E6F7EE",
+        "borderColor": "rgba(0, 171, 89, 0.6)"
+      },
+      {
+        "name": "PENDING_PICKUP",
+        "heading": "रिटर्न पिकअप",
+        "desc": "अगर आप 24 घंटे के भीतर कस्टमर से आइटम पिकअप नहीं करते हैं| तब आपका इंसेंटिव नहीं मिलेगा| और आपकी रेटिंग्स पर भी असर पड़ेगा|",
+        "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1666256448388-return.png",
+        "bgColor": "#FFEEEB",
+        "borderColor": "rgba(228, 0, 70, 0.6)"
+      }
+    ],
+    "popups": {
+      "confirmCancelPickup": {
+        "heading": "कैंसिल रिटर्न पिकअप ",
+        "message": "क्या आप रिटर्न पिकअप कैंसिल करना चाहते हैं? बिना कस्टमर की सहमति के कैंसिल करने पर आपके खिलाफ कंप्लेंट रजिस्टर की जाएगी| ",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      },
+      "confirmPickup": {
+        "heading": "कस्टमर से पिकअप ",
+        "message": "कस्टमर से आइटम रिटर्न के लिए पिक कर लिया है? कस्टमर से रिटर्न पिकअप मार्क करते ही डिलीवरी बॉय द्वारा आइटम आपसे पिक किया जायेगा|",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      },
+      "confirmDelivery": {
+        "heading": "मार्क डिलीवरी ",
+        "message": "क्या आपने कस्टमर को ऑर्डर डिलीवर कर दिया है? अगर आप डिलीवर किये बिना मार्क डिलीवरी करते हैं, तब आपको कमीशन नहीं मिलेगा| ",
+        "buttons": [
+          {
+            "text": "नहीं",
+            "color": "rgba(0, 0, 0, 0.56)",
+            "isApi": false
+          },
+          {
+            "text": "हाँ",
+            "color": "#E40046",
+            "isApi": true
+          }
+        ]
+      }
+    },
+    "delivery_info_modal": {
+      "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1683797716569-DeliveryInfo.png",
+      "heading": "ऑर्डर डिलीवरी जानकारी",
+      "list": [
+        "24 घंटों के अंदर डिलीवरी मार्क करने पर ही पूरा कमीशन मिलेगा!",
+        "अगर आपको लगता है डिलीवरी थोड़ी देरी से होगी या कस्टमर ने ऑर्डर लेने से मना कर दिया है, यह आपको 24 घंटों के अंदर ही बताना पड़ेगा! ऐसा न करने पर $$color50% कमीशन काट लिया जायेगा!"
+      ],
+      "button": {
+        "text": "डिलीवरी करना शुरू करें",
+        "color": "rgba(0, 171, 89, 1)",
+        "fontColor": "rgba(255, 255, 255, 1)"
+      },
+      "is_visible": false
+    },
+    "reschedule_info_modal": {
+      "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1683881294697-attention%20Please.png",
+      "heading": "डिलीवरी में देरी मतलब",
+      "desc": "कमीशन में देरी, कस्टमर की शिकायत आना और सिटीमॉल कस्टमर से भी पूछेगा, कुछ भी गलत पाए जाने पर पेनल्टी भुगतें !",
+      "question": "$$name जी के ऑर्डर डिलीवरी में देरी का कारण चुनें ",
+      "timeInfo": "डिलीवरी समय 24 घंटा बढ़ जाएगा",
+      "reasons": [
+        {
+          "key": "need_extra_time",
+          "value": "मुझे थोड़ा और समय चाहिए "
+        },
+        {
+          "key": "customer_unable_to_take_delivery",
+          "value": "कस्टमर आज डिलीवरी नहीं ले पाएंगे "
+        }
+      ]
+    },
+    "delay_delivery_modal": {
+      "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1683797716569-DeliveryInfo.png",
+      "heading": "डिलीवरी में देरी",
+      "list": [
+        "आपने इस ऑर्डर का डिलीवरी समय बदलने के बाद भी समय के अंदर डिलीवरी मार्क नहीं की है! इसलिए आपके ऊपर पेनल्टी लगाते हुए इस ऑर्डर $$colorपर 50% कमीशन काट लिया जायेगा!",
+        "बाकी 50% कमीशन के लिए आपको 22 घंटो के अंदर डिलीवरी मार्क करना है!"
+      ],
+      "button": {
+        "color": "rgba(0, 0, 0, 0.05)",
+        "fontColor": "rgba(0, 0, 0, 0.86)"
+      }
+    },
+    "isCxDeliveryRescheduleEnabled": false
+  }

@@ -1,0 +1,121 @@
+*,
+div {
+  position: relative;
+}
+
+.nav ul.navbar {
+  /* position: relative; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-decoration: none;
+  list-style-type: none;
+}
+
+.btn {
+  border: none;
+  outline: none;
+  background: linear-gradient(to right, #6541c1 0%, #d43396 98%, #d43396 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 28%;
+}
+
+.btn-1 {
+  border-radius: 10px;
+  /* background: linear-gradient(to right, #6541c1 0%, #d43396 98%, #d43396 100%, ); */
+}
+
+.btn :hover {
+  background: linear-gradient(to right, #6541c1 0%, #d43396 98%, #d43396 100%);
+  color: white;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  /* margin-right: -15px;
+  margin-left: -15px; */
+}
+
+.banner-static.banner-moc {
+  left: -100px;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.nav-link {
+  color: white;
+  font-size: 25px;
+}
+.container {
+  position: relative;
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.temp_container,
+.row {
+  position: relative;
+  border: 1px solid red;
+  height: 100%;
+}
+.carousel_container {
+  position: relative;
+}
+.phone_boundary {
+  position: relative;
+  z-index: 100;
+}
+.mobile {
+  position: absolute;
+  /* z-index: 0; */
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 340px;
+  /* height: 750px; */
+  overflow: hidden;
+  border-radius: 0 0 1000px 1000px;
+}
+/* .half {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+.carousel_image {
+  /* max-height: 90%; */
+  position: relative;
+  z-index: 90;
+  clip-path: inset(0 0 90px 0);
+}
+.carousel_image:not(:first-child) {
+  margin-left: -640px;
+}
+.carousel_image:first-child {
+  margin-left: 25px;
+}
+@media screen and (min-width: 480px) {
+  /* .nav {
+    } */
+  /* .mobile {
+    background-image: url(./image/download-1.png);
+  } */
+}
+
+/* .container-2 h1 p{
+  text-align: center;
+} */

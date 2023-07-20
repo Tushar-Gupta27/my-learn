@@ -1,0 +1,82 @@
+{
+    "date": "2023-06-26",
+    "leaderId": "fcd145e7-3298-4ef4-a7f4-71b30b687451",
+    "delayTimeInHours": 24,
+    "tasksCount": {
+        "customers": 0,
+        "delayedCustomers": 1,
+        "completedCustomers": 0
+    },
+    "bannersToShow": [
+        "PENDING_RETURN_REFUND"
+    ],
+    "customers": [],
+    "delayedCustomers": [
+        {
+            "user_id": "8842453",
+            "user_name": "Parth",
+            "address": "New address @ 1   GURGAON 122001",
+            "phone_number": "2222255555",
+            "includes_pending_refunds": true,
+            "max_delay_count_in_hours": 72,
+            "cx_lat": "28.5115958",
+            "cx_lng": "77.0364654",
+            "distance": "950m",
+            "pay_by_cx": -1020,
+            "refunds_overview": {
+                "pay_by_cx": -1020,
+                "count": 2
+            },
+            "refunds": [
+                {
+                    "return_req_id": "1297",
+                    "delay_count_in_hours": 70,
+                    "status": "PENDING_REFUND_TO_CX",
+                    "refunded_to_cx_at": null,
+                    "payment_mode": "COD",
+                    "wt_id": "186f1894-8fba-41aa-9f3f-08c479f49141",
+                    "amount": 1020,
+                    "count": 2,
+                    "return_req_items": [
+                        {
+                            "slug": "madhusudan-desi-ghee-1kg",
+                            "amount": 1020,
+                            "quantity": 2,
+                            "short_name": "मधुसूदन देसी घी 1 L",
+                            "product_image": "https://cdn-cmimgopt.citymall.live/cmimgopt-44b77a59-06c8-43c1-bbf6-3f9c6b8a1b69.webp"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "completedCustomers": [],
+    "carousel": [
+        {
+            "name": "PENDING_RETURN_REFUND",
+            "heading": "रिटर्न रिफंड",
+            "desc": "अगर आप 24 घंटे के भीतर कस्टमर को रिफंड नहीं करते हैं|तब आइटम का अमाउंट आपके गुल्लक में से काट लिया जा सकता है| और आपकी रेटिंग्स पर भी असर पड़ेगा|",
+            "icon": "https://public-cdn.citymall.live/cm-admin-storage-public/cl_app_icon%2F1666256657660-order.png",
+            "bgColor": "#E6F7EE",
+            "borderColor": "rgba(0, 171, 89, 0.6)"
+        }
+    ],
+    "popups": {
+        "confirmRefund": {
+            "heading": "कस्टमर को रिफंड किया ",
+            "message": "क्या अपने कस्टमर को रिफंड कर दिया है? \nकस्टमर को रिफंड किये बिना रिफंड मार्क करने पर आइटम का अमाउंट आपके गुल्लक में से काट लिया जा सकता है|",
+            "buttons": [
+                {
+                    "text": "नहीं",
+                    "color": "rgba(0, 0, 0, 0.56)",
+                    "isApi": false
+                },
+                {
+                    "text": "हाँ",
+                    "color": "#E40046",
+                    "isApi": true
+                }
+            ]
+        }
+    }
+}
