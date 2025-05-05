@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<!-- saved from url=(0090)https://spinscale.de/posts/2021-06-30-implementing-phonetic-search-with-elasticsearch.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="origin"><meta name="description" content="TLDR; This article will give you an introduction into phonetic search, why and when to use it and what limitations there are. If you thought fuzziness is your best option to find similar terms, this blog post will explain an alternative approach.
+What is the problem with fuzziness? A common approach to widen your search and to cater for typos is to enable fuzziness in your search. This has two effects. First, there is a limit on the fuzziness per term depending on the length, see the Elasticsearch Fuzziness documentation. Second, this will increase the CPU utilization of your nodes. Also, from a results perspective this may not be what you wanted. A fuzzy search for lead might include documents containing leak, but this may not be the documents that you are after.
+"><meta name="og:description" content="TLDR; This article will give you an introduction into phonetic search, why and when to use it and what limitations there are. If you thought fuzziness is your best option to find similar terms, this blog post will explain an alternative approach.
+What is the problem with fuzziness? A common approach to widen your search and to cater for typos is to enable fuzziness in your search. This has two effects. First, there is a limit on the fuzziness per term depending on the length, see the Elasticsearch Fuzziness documentation. Second, this will increase the CPU utilization of your nodes. Also, from a results perspective this may not be what you wanted. A fuzzy search for lead might include documents containing leak, but this may not be the documents that you are after.
+"><meta name="og:image" content="https://pbs.twimg.com/profile_images/937821410260606976/agwO53pb_400x400.jpg"><meta name="og:title" content="Implementing phonetic search with Elasticsearch"><meta name="og:locale" content="en_US"><meta name="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://pbs.twimg.com/profile_images/937821410260606976/agwO53pb_400x400.jpg"><meta name="twitter:title" content="Implementing phonetic search with Elasticsearch"><meta name="twitter:description" content="TLDR; This article will give you an introduction into phonetic search, why and when to use it and what limitations there are. If you thought fuzziness is your best option to find similar terms, this blog post will explain an alternative approach.
+What is the problem with fuzziness? A common approach to widen your search and to cater for typos is to enable fuzziness in your search. This has two effects. First, there is a limit on the fuzziness per term depending on the length, see the Elasticsearch Fuzziness documentation. Second, this will increase the CPU utilization of your nodes. Also, from a results perspective this may not be what you wanted. A fuzzy search for lead might include documents containing leak, but this may not be the documents that you are after.
+"><meta name="twitter:creator" content="@spinscale"><title>Implementing phonetic search with Elasticsearch
+</title><link rel="canonical" href="https://spinscale.de/posts/2021-06-30-implementing-phonetic-search-with-elasticsearch.html"><link rel="stylesheet" type="text/css" href="./Implementing phonetic search with Elasticsearch_files/bundle.min.css"><link rel="apple-touch-icon" sizes="180x180" href="https://spinscale.de/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://spinscale.de/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://spinscale.de/favicon-16x16.png"><link rel="manifest" href="https://spinscale.de/site.webmanifest"><link href="https://spinscale.de/feed.rss" rel="alternate" type="application/rss+xml" title="spinscale.de - by Alexander Reelsen"><link href="https://spinscale.de/feed.rss" rel="feed" type="application/rss+xml" title="spinscale.de - by Alexander Reelsen"></head><body lang="en" data-new-gr-c-s-check-loaded="14.1229.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.1229.0"><section class="header"><div class="container"><div class="content"><a href="https://spinscale.de/"><img class="avatar" src="./Implementing phonetic search with Elasticsearch_files/alr.jpg" srcset="https://spinscale.de/img/alr.jpg 1x" alt="Author Avatar Image"></a>
+<a href="https://spinscale.de/"><div class="name">Alexander Reelsen</div></a><h3 class="self-intro">Backend developer, productivity fan, likes the JVM, full text search, distributed databases &amp; systems</h3><nav><ul><li class="nav-posts"><a href="https://spinscale.de/posts/index.html"><span>Blog</span></a></li><li class="nav-presentations"><a href="https://spinscale.de/presentations.html"><span>Presentations</span></a></li><li class="nav-projects"><a href="https://spinscale.de/projects.html"><span>Projects</span></a></li><li class="nav-about"><a href="https://spinscale.de/about.html"><span>About</span></a></li><li class="nav-imprint"><a href="https://spinscale.de/imprint.html"><span>Imprint</span></a></li></ul></nav></div></div></section><section class="icons"><div class="container"><div class="content"><a href="https://github.com/spinscale/"><i class="svg-icon" aria-label="GitHub"><svg viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6.0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6.0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3.0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1.0-6.2-.3-40.4-.3-61.4.0.0-70 15-84.7-29.8.0.0-11.4-29.1-27.8-36.6.0.0-22.9-15.7 1.6-15.4.0.0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5.0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9.0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4.0 33.7-.3 75.4-.3 83.6.0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6.0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9.0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></i></a>
+<a rel="me" href="https://mastodon.social/@spinscale"><i class="svg-icon" aria-label="Mastodon"><svg viewBox="0 0 800 800"><path d="M729.94 479.5c-10.96 56.4-98.17 118.12-198.34 130.08-52.23 6.23-103.66 11.96-158.49 9.44-89.68-4.1-160.45-21.4-160.45-21.4.0 8.73.54 17.04 1.62 24.81 11.66 88.52 87.76 93.82 159.84 96.29 72.76 2.49 137.55-17.94 137.55-17.94l2.99 65.79s-50.89 27.32-141.55 32.35c-50 2.75-112.07-1.26-184.37-20.39C31.94 737.02 4.97 569.86.85 400.26-.41 349.9.37 302.42.37 262.7.37 89.27 113.99 38.44 113.99 38.44 171.28 12.12 269.59 1.06 371.79.22h2.52c102.19.84 200.57 11.9 257.86 38.22.0.0 113.62 50.83 113.62 224.26.0.0 1.42 127.96-15.85 216.8" fill="#3088d4"></path><path d="M611.77 276.16v209.99h-83.2V282.33c0-42.97-18.07-64.77-54.23-64.77-39.98.0-60.01 25.86-60.01 77.02v111.57h-82.71V294.58c0-51.16-20.04-77.02-60.01-77.02-36.16.0-54.24 21.8-54.24 64.77v203.82h-83.19V276.16c0-42.92 10.93-77.03 32.88-102.26 22.63-25.23 52.27-38.17 89.07-38.17 42.57.0 74.81 16.37 96.12 49.1l20.72 34.74 20.73-34.74c21.31-32.73 53.55-49.1 96.12-49.1 36.79.0 66.44 12.94 89.07 38.17 21.95 25.23 32.88 59.34 32.88 102.26z" fill="#fff"></path></svg>
+</i></a><a href="https://bsky.app/profile/spinscale.bsky.social"><i class="svg-icon" aria-label="Bluesky"><svg viewBox="0 0 512 512"><path d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2 42.1-31.6 110.3-56 110.3 21.8.0 15.5-8.9 130.5-14.1 149.2-18.2 64.8-84.4 81.4-143.3 71.3C456 322 482.2 380 425.6 438c-107.4 110.2-154.3-27.6-166.3-62.9-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8c-12 35.3-59 173.1-166.3 62.9-56.5-58-30.4-116 72.5-133.5C1e2 314.6 33.8 298 15.7 233.1 10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"></path></svg>
+</i></a><a href="https://www.linkedin.com/in/alexanderreelsen/"><i class="svg-icon" aria-label="LinkedIn"><svg viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5.0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6.0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3.0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2.0 38.5 17.3 38.5 38.5.0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6.0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2.0 79.7 44.3 79.7 101.9V416z"></path></svg></i></a>
+<a href="https://spinscale.de/feed.rss"><i class="svg-icon" aria-label="RSS"><svg viewBox="0 0 448 512"><path d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328.0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765.0 183.105.0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686.0 38.981.0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg></i></a></div></div></section><section class="main post non-narrow zero-top-spacing"><div class="container"><div class="content"><div class="front-matter"><div class="title-container"><div class="page-heading">Implementing phonetic search with Elasticsearch</div><div class="initials"><a href="https://spinscale.de/"></a></div></div><div class="meta"><div class="date" title="Wed Jun 30 2021 00:00:00 UTC">Jun 30, 2021</div><div class="reading-time"><div class="middot"></div>16 minutes read</div></div></div><div class="markdown"><p>TLDR; This article will give you an introduction into phonetic search, why
+and when to use it and what limitations there are. If you thought
+fuzziness is your best option to find similar terms, this blog post will
+explain an alternative approach.</p><h2 id="what-is-the-problem-with-fuzziness">What is the problem with fuzziness?</h2><p>A common approach to widen your search and to cater for typos is to enable
+fuzziness in your search. This has two effects. First, there is a limit on
+the fuzziness per term depending on the length, see the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.13/common-options.html#fuzziness">Elasticsearch
+Fuzziness
+documentation</a>.
+Second, this will increase the CPU utilization of your nodes. Also, from a
+results perspective this may not be what you wanted. A fuzzy search for
+<code>lead</code> might include documents containing <code>leak</code>, but this may not be the
+documents that you are after.</p><p>Phonetic search takes a different approach. First this happens on index
+time, as the tokens are converted and stored in the inverted index as a
+different representation. This representation is not based on the edit
+distance of terms (which would not be possible, as you need to compare this
+against a term at query time), but takes the pronounciation and the order of certain
+letters within a term into account and creates a normalized output term, so
+that the representations of two names like <code>Alexander</code> and <code>Aleksandar</code> are
+the same in the best case.</p><h2 id="installing-the-phonetic-analysis-plugin">Installing the phonetic analysis plugin</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:flex"><span>bin/elasticsearch-plugin install analysis-phonetic
+</span></span></code></pre></div><p>After this you can use the <code>phonetic</code> token filter in your mappings. This is
+a minimal example using the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.13/indices-analyze.html">analyze API</a>:</p><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"koelnerphonetik"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>The response looks like this:</p><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokens"</span> : [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"0548627"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"0548627"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"0548627"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>As you can see the three inputs end up with exactly the same token in the
+inverted index. So if anyone searches for <code>Oleksandr</code> any document
+containing <code>Alexander</code> and <code>Aleksandar</code> will also be returned. Taking a look
+at the two terms <code>Alexander</code> and <code>Oleksandr</code> this could not be matched with
+a fuzzy query, as the levenshtein edit distance between the two terms is
+<strong>4</strong> (changes required to get from one term to the other).</p><p>The basic idea is to devise an algorithm that returns the same token for
+similar sounding or written terms like the names above. Some of those
+algorithms return a term without any vowels, other like the <code>koelnerphonetik</code>
+return a set of numbers.</p><p>Even though it is only a single token filter, it is basically a multiplexer
+for quite a few different phonetic encoders using the <code>encoder</code> parameter
+within the filter. The Elasticsearch plugin is
+using phonetic analyzers from Apache Lucene, which in turn uses classes
+based on Apache <code>commons-codec</code>. Within Elasticsearch all this is grouped in
+<a href="https://github.com/elastic/elasticsearch/blob/7.13/plugins/analysis-phonetic/src/main/java/org/elasticsearch/index/analysis/PhoneticTokenFilterFactory.java">PhoneticTokenFilterFactory</a>.
+Let’s take a look at each of those together with some sample terms to see
+what they end up as.</p><h2 id="soundex"><code>soundex</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"soundex"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/Soundex.java">Apache Commons Codec Soundex implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>A425</td></tr><tr><td>Aleksandar</td><td>A425</td></tr><tr><td>Oleksandr</td><td>O425</td></tr><tr><td>Meyer</td><td>M600</td></tr><tr><td>Meier</td><td>M600</td></tr><tr><td>Maier</td><td>M600</td></tr></tbody></table><p><a href="https://en.wikipedia.org/wiki/Soundex">Soundex</a> is the poster child of
+these phonetic algorithms, as it is probably the most known one. Many
+databases implement some sort of Soundex in their SQL query engine to
+support a simple phonetic algorithm. Also, it is really old as it originates
+from 1918 (not a typo 😀). You can see in the above output, the first letter is preserved
+and then a number based encoding is used. There are a few encoding rules
+(let’s use <code>Alexander</code> as input term, and to step by step)</p><ul><li>Drop all occurrences of all vowels plus <code>y</code>, <code>h</code> and <code>w</code>. Term is now
+<code>Alxndr</code></li><li><code>b, f, p, v</code> encodes to <code>1</code>. Term stays <code>Alexndr</code></li><li><code>c, g, j, k, q, s, x, z</code> encodes to <code>2</code>. Term becomes <code>Al2ndr</code></li><li><code>d, t</code> encodes to <code>3</code>. Term becomes <code>Al2n3r</code></li><li><code>l</code> encodes to <code>4</code>. Term becomes <code>A42n3r</code></li><li><code>m, n</code> encodes to <code>5</code>. Term becomes <code>A4253r</code></li><li><code>r</code> encodes to <code>6</code>. Term becomes <code>A42536</code>.</li><li>Reduce two of the same letters to one (if that is true before doing any
+other reduction). Term stays the same.</li><li>Two letters with the same number separated by <code>h</code> or <code>w</code> are coded as
+single number. Term stays the same.</li><li>The output will always be one letter and three numbers, either filled up
+with zeros or retaining only the first three. This means losing a bit of
+precision for longer words. For example <code>experiment</code> and <code>experience</code> are
+both becoming <code>E216</code> (similar to certain algorithmic stemmers, where both
+of those terms become <code>experi</code>). Term becomes <code>A425</code> as seen above.</li></ul><p>In case you are wondering why Maier is <code>M600</code>. Dropping all vowels means, we
+are up to <code>Mr</code> as term, and encoding that one means <code>M</code> and <code>6</code>, the rest is
+filled with zeros.</p><p>Of course this can become much more efficient as shown above in an concrete
+implementation.</p><p>There are also some limitations (that apply to the next Soundex
+implementation as well). When a term contains a non-ASCII character like the
+German term <code>Äpfel</code> (the plural of <code>Apfel</code>) or <code>Bälle</code> (plural of ball), it
+is not converted at all. So it might make sense, to use ASCII folding
+before using Soundex:</p><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Äpfel"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>:<span style="color:#e6db74">"asciifolding"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"soundex"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Note, the above implementation is actually the so called american soundex.</p><h2 id="refined_soundex"><code>refined_soundex</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"refined_soundex"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/RefinedSoundex.java">Apache Commons Codec Refined Soundex implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>A070508609</td></tr><tr><td>Aleksandar</td><td>A070508609</td></tr><tr><td>Oleksandr</td><td>O07030869</td></tr><tr><td>Meyer</td><td>M809</td></tr><tr><td>Meier</td><td>M809</td></tr><tr><td>Maier</td><td>M809</td></tr></tbody></table><p>This is an adaption of the initial Soundex idea. The most obvious difference
+is the length of the output term, as there is no term exactly three numbers
+long. Also, there is no removal of letters and the encoding alphabet has
+changed a little and contains the numbers from 0 up to 9. Same letters next
+to each other are still removed in most cases.</p><p>I could not find the proper origin of the refined Soundex algorithm. So if
+you happen to know, feel free to drop a note.</p><h2 id="metaphone-encoder"><code>metaphone</code> encoder</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"metaphone"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/Metaphone.java">Apache Commons Codec Metaphone implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>ALKS</td></tr><tr><td>Aleksandar</td><td>ALKS</td></tr><tr><td>Oleksandr</td><td>OLKS</td></tr><tr><td>Meyer</td><td>MYR</td></tr><tr><td>Meier</td><td>MR</td></tr><tr><td>Maier</td><td>MR</td></tr></tbody></table><p>The <a href="https://en.wikipedia.org/wiki/Metaphone">Metaphone algorithm</a> was
+published in 1990 with a focus for English words and their pronunciation,
+even though there is also a <a href="https://github.com/carlosjordao/metaphone-ptbr">Portuguese
+version</a> (that also has a
+postgres extension).</p><p>The way Metaphone works is similar to Soundex. It basically expands Soundex
+with more rules than Soundex. The remaining string will be uppercased.
+Vowels are dropped except at the beginning of a word, other characters in
+use <code>0BFHJKLMNPRSTWXY</code>.</p><h2 id="double_metaphone"><code>double_metaphone</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"double_metaphone"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java">Apache Commons Codec Double Metaphone implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>ALKS</td></tr><tr><td>Aleksandar</td><td>ALKS</td></tr><tr><td>Oleksandr</td><td>ALKS</td></tr><tr><td>Meyer</td><td>MR</td></tr><tr><td>Meier</td><td>MR</td></tr><tr><td>Maier</td><td>MR</td></tr></tbody></table><p>The second generation of the Metaphone algorithm is from the year 2000.
+Double Metaphone can emit more than one output term. However the
+above examples only return one. You can try with <code>Smith</code> and <code>Schmidt</code> and
+will retrieve four terms, and both input terms will have <code>XMT</code> as output.
+The <code>double_metaphone</code> algorithm introduced the possibility of having more
+than one output term for an input term.</p><p>The price for this is a higher complexity. The java class is twice
+the size of the original Metaphone algorithm. In order to cater for a few
+more edge cases in English, that have been introduced by using words from
+other languages, there are lengthy checks for single letters, like the
+<a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java#L277-L324"><code>handleC</code> method</a>.</p><p>There is also a third variant of the Metaphone algorithm, you can check out
+its implementation in the <a href="https://github.com/OpenRefine/OpenRefine/blob/master/main/src/com/google/refine/clustering/binning/Metaphone3.java">OpenRefine project</a>.</p><h2 id="caverphone1"><code>caverphone1</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"caverphone1"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/Caverphone1.java">Apache Commons Codec Caverphone1 implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>ALKNT1</td></tr><tr><td>Aleksandar</td><td>ALKSNT</td></tr><tr><td>Oleksandr</td><td>ALKSNT</td></tr><tr><td>Meyer</td><td>MY1111</td></tr><tr><td>Meier</td><td>M11111</td></tr><tr><td>Maier</td><td>M11111</td></tr></tbody></table><p>Originally from 2002, back then optimized for a use-case in a specific New
+Zealand area. A big difference is, that this algorithm does not go letter by
+letter but also replaces certain multi letter prefixes like <code>cough</code>,
+<code>rough</code> - also it has a length limitation of 6 for the output, defaulting to
+<code>1</code>.</p><p><strong>Note</strong>: If you want to test it, make sure you are using <code>cavorphone1</code> in
+your mapping setup, as <code>caverphone</code> defaults to version 2 of the algorithm.</p><p>The <a href="https://caversham.otago.ac.nz/files/working/ctp060902.pdf">describing paper</a> includes a
+simple javascript implementation.</p><h2 id="caverphone2"><code>caverphone2</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"caverphone2"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/Caverphone2.java">Apache Commons Codec Caverphone2 implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>ALKNTA1111</td></tr><tr><td>Aleksandar</td><td>ALKSNTA111</td></tr><tr><td>Oleksandr</td><td>ALKSNTA111</td></tr><tr><td>Meyer</td><td>MA11111111</td></tr><tr><td>Meier</td><td>MA11111111</td></tr><tr><td>Maier</td><td>MA11111111</td></tr></tbody></table><p>The biggest change on the outside here is the length of the output term. The
+authors intention here was to provide a more general phonetic match than the
+specific Caverphone 1.0 algorithm. The algorithm was invented in late 2004.</p><p>The <a href="https://caversham.otago.ac.nz/files/working/ctp150804.pdf">describing
+paper</a> includes a
+simple python implementation along with a comparison of some terms to
+Soundex and Metaphone.</p><h2 id="nysiis"><code>nysiis</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"nysiis"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/Nysiis.java">Apache Commons Codec NYSIIS implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>ALAXAN</td></tr><tr><td>Aleksandar</td><td>ALACSA</td></tr><tr><td>Oleksandr</td><td>OLACSA</td></tr><tr><td>Meyer</td><td>MAYAR</td></tr><tr><td>Meier</td><td>MAR</td></tr><tr><td>Maier</td><td>MAR</td></tr></tbody></table><p><a href="https://en.wikipedia.org/wiki/New_York_State_Identification_and_Intelligence_System">NYSIIS</a>,
+short for <em>New York State Identification and Intelligence System</em> is an
+algorithm from 1970 and is basically an improved Soundex algorithm.</p><p>It contains some specializations like specific encodings for certain starts
+or ends of a term, i.e. starting with <code>Mac</code> or <code>Sch</code>.</p><h2 id="cologne"><code>cologne</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"cologne"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/ColognePhonetic.java">Apache Commons Codec Cologne Phonetic implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>0548627</td></tr><tr><td>Aleksandar</td><td>0548627</td></tr><tr><td>Oleksandr</td><td>0548627</td></tr><tr><td>Meyer</td><td>67</td></tr><tr><td>Meier</td><td>67</td></tr><tr><td>Maier</td><td>67</td></tr></tbody></table><p>Let’s go a bit more German now - but you might have guessed, we’re staying
+in the realm of Soundex related algorithms. This one is optimized for the
+German language. Introduced in 1969 it is not limited in length, and even
+has a letter that produces a two digit code (<code>X</code>, try <code>Xylophon</code> or
+<code>Exoskelett</code>).</p><p>The <a href="https://en.wikipedia.org/wiki/Cologne_phonetics">wiki page</a> lists the letter replacements or the <a href="https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/language/ColognePhonetic.html">commons-codec javadocs</a>.</p><h2 id="koelnerphonetik"><code>koelnerphonetik</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"koelnerphonetik"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses a <a href="https://github.com/elastic/elasticsearch/blob/7.13/plugins/analysis-phonetic/src/main/java/org/elasticsearch/index/analysis/phonetic/KoelnerPhonetik.java">custom Koelner Phonetik implementation</a></p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>0548627</td></tr><tr><td>Aleksandar</td><td>0548627</td></tr><tr><td>Oleksandr</td><td>0548627</td></tr><tr><td>Meyer</td><td>67</td></tr><tr><td>Meier</td><td>67</td></tr><tr><td>Maier</td><td>67</td></tr></tbody></table><p>Now this one is slightly confusing. It has the same name than the cologne
+phonetik, except that the German name of the city of cologne is used,
+<code>Köln</code>. This also uses a different implementation, where I am not sure why
+that is the case. This had been added to Elasticsearch about 9 years ago, so
+it is hard to get the history right I guess 😀</p><p>After digging around a little I found out that there are indeed differences
+because of the <code>commons-codec</code> version shipped with Elasticsearch, that
+contains two bugs. If you are interested in more details, check out the
+<a href="https://github.com/elastic/elasticsearch/issues/74614">Elasticsearch GitHub
+issue #74614</a></p><h2 id="haasephonetik"><code>haasephonetik</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"haasephonetik"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses a <a href="https://github.com/elastic/elasticsearch/blob/7.13/plugins/analysis-phonetic/src/main/java/org/elasticsearch/index/analysis/phonetic/HaasePhonetik.java">custom HaasePhonetik implementation</a></p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>9548627</td></tr><tr><td>Aleksandar</td><td>9548627</td></tr><tr><td>Oleksandr</td><td>9548627</td></tr><tr><td>Meyer</td><td>67</td></tr><tr><td>Meier</td><td>67</td></tr><tr><td>Maier</td><td>67</td></tr></tbody></table><p>This is an extension of the koelner phonetic, done by Martin Haase. This was
+initially used for management of names in a hospital and was also called
+extended koelner phonetic. As you can see, when comparing the terms to
+koelner, in this example there is no change, except the first character
+becoming becoming a 9 in this example, if the term starts with a Vowel.</p><p>The above link to the implementation, extends the <code>KoelnerPhonetik</code> class so
+you can go ahead and spot the differences for various partially terms and
+their encoding.</p><h2 id="daitch_mokotoff"><code>daitch_mokotoff</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"daitch_mokotoff"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/DaitchMokotoffSoundex.java">Apache Commons Codec Daitch Mokotoff implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>085463</td></tr><tr><td>Aleksandar</td><td>085463</td></tr><tr><td>Oleksandr</td><td>085463</td></tr><tr><td>Meyer</td><td>619000</td></tr><tr><td>Meier</td><td>619000</td></tr><tr><td>Maier</td><td>619000</td></tr></tbody></table><p>This is an improved Soundex algorithm from 1985, with a better accuracy for
+eastern European names, where pronunciation is similar, but spelling is
+different. By default this one is doing asciifolding, compared to other
+implementations. Compared to earlier Soundex implementations this one also
+has the ability to take several characters at once into account instead of
+going character-by-character.</p><p>In order to define a ruleset for several characters this algorithm features
+the concept of rules. So there is a
+<a href="https://github.com/apache/commons-codec/blob/master/src/main/resources/org/apache/commons/codec/language/dmrules.txt"><code>dmrules.txt</code></a>
+file in the commons-codec source that describes what a pattern is replaced
+with (depending if it occurs before a vowel, start at word or other).</p><h2 id="beider_morse"><code>beider_morse</code></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Alexander"</span>, <span style="color:#e6db74">"Aleksandar"</span>, <span style="color:#e6db74">"Oleksandr"</span> ],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"beider_morse"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>Elasticsearch uses the <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/bm/BeiderMorseEncoder.java">Apache Commons Codec Beider-Morse implementation</a>.</p><table><thead><tr><th>Input</th><th>Output</th></tr></thead><tbody><tr><td>Alexander</td><td>many terms…</td></tr><tr><td>Aleksandar</td><td>many terms…</td></tr><tr><td>Oleksandr</td><td>many terms…</td></tr><tr><td>Meyer</td><td>mDr</td></tr><tr><td>Meier</td><td>mDr</td></tr><tr><td>Maier</td><td>mDr</td></tr></tbody></table><p>Finally a completely different approach for encoding and a rather new, as it
+has been published in 2008! And that also happens
+to be the last of the current Elasticsearch supported phonetic encodings
+(check the next paragraph for what else is out there). Stephen Morse and
+Alexander Beider came up with this to address some shortfallings of the
+Daitch-Motokoff algorithm, especially for surnames.</p><p>So I have not put the output up there, because that would have been too many
+terms for all of them. Just for <code>Alexander</code> we get 48 terms back! Many of
+them look very similar, so what is the deal here and how does it work?</p><p>So, Beider-Morse tries to figure out the language of an input term first, by
+<a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java#L380">guessing
+it</a>.
+In order to do that, there is a few language rules shipped with
+Beider-Morse. Those language rules let you configure if you are expecting
+names to be generic or of Ashkenazic/Sephardic Jewish origin.</p><p>Take this example</p><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Schwarz"</span>],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"beider_morse"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span><span style="display:flex"><span>
+</span></span><span style="display:flex"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">_analyze?filter_path=tokens.token</span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"text"</span>: [ <span style="color:#e6db74">"Szwarc"</span>],
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokenizer"</span>: <span style="color:#e6db74">"standard"</span>, 
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"filter"</span>: [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"type"</span>: <span style="color:#e6db74">"phonetic"</span>,
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"encoder"</span>: <span style="color:#e6db74">"beider_morse"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>returning</p><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokens"</span> : [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"svYrts"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"svarts"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"svorts"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]
+</span></span><span style="display:flex"><span>}
+</span></span><span style="display:flex"><span>
+</span></span><span style="display:flex"><span>{
+</span></span><span style="display:flex"><span>  <span style="color:#f92672">"tokens"</span> : [
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"svarts"</span>
+</span></span><span style="display:flex"><span>    },
+</span></span><span style="display:flex"><span>    {
+</span></span><span style="display:flex"><span>      <span style="color:#f92672">"token"</span> : <span style="color:#e6db74">"svorts"</span>
+</span></span><span style="display:flex"><span>    }
+</span></span><span style="display:flex"><span>  ]<span style="color:#960050;background-color:#1e0010">`</span>
+</span></span><span style="display:flex"><span>}
+</span></span></code></pre></div><p>As you can see, despite a very different pronunciation, both tokens end up
+as <code>svarts</code> and <code>svorts</code> in the index. The reason for this is, that
+<code>Schwarz</code> has been detected as German, whereas <code>Szwarc</code> has been detected as
+Polish and thus different rules are being applied.</p><p>You can take a look at the different rules
+<a href="https://github.com/apache/commons-codec/blob/master/src/main/resources/org/apache/commons/codec/language/bm/gen_lang.txt#L95">here</a>
+and figure out that words beginning with <code>sch</code> are considered German or
+Russian, plus ending with <code>rz</code> is considered Polish or German.</p><p>That said, using Beider-Morse you will probably create more tokens than with
+other algorithms, so keep that in mind for your space requirements.</p><h2 id="others-not-implemented-in-elasticsearch">Others not implemented in Elasticsearch</h2><p>If you thought, that this is all you need to know, then you’re wrong. Let’s
+go briefly through some more algorithms.</p><h3 id="match-rating-approach">Match Rating Approach</h3><p>Availabe as <a href="https://github.com/apache/commons-codec/blob/master/src/main/java/org/apache/commons/codec/language/MatchRatingApproachEncoder.java">Apache Commons Codec implementation</a>.</p><p>This approach has been developed in 1977 by Western Airlines. It normalizes
+(removing accents), removes vowels as well as double consonants and then
+reduces down to the first three and last three letters of the output. So for
+<code>Alexander</code> this would be <code>ALXNDR</code>.</p><h3 id="moar-soundex">Moar Soundex</h3><p><a href="https://web.archive.org/web/20100629121128/http://www.ir.iit.edu/publications/downloads/IEEESoundexV5.pdf">Fuzzy Soundex</a> is another variant that is in some implementations, that performs
+additional substitutions.</p><p>Next up there is the <a href="https://naldc.nal.usda.gov/download/27833/PDF">Lein Name Coding</a>, another variation on Soundex/NYSIIS, which produces another 4 character code for any given name.</p><p>Then there is ONCA - <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.106.9641&amp;rep=rep1&amp;type=pdf">Oxford Name Compression Algorithm</a> from 1997, another extension of Soundex and NYSIIS.</p><p><a href="https://naldc.nal.usda.gov/download/27833/PDF">Roger Root Name Coding
+Procedure</a> is producing a
+fully numeric 5 character code. The linked PDF is the same as for the Lein
+Name Coding. Check the page labeled <code>28</code> for a description of how this
+work.</p><p><a href="https://naldc.nal.usda.gov/download/27833/PDF">Statistics Canada Name
+Coding</a> is a special coding
+over the french standard alphabet. The linked PDF is the same as for the Lein
+Name Coding. Check the page labeled <code>26</code> for a description of how this
+work.</p><p>The final one on this list (if you dig, you will find more, also for German
+use-cases like <code>phonem</code>) is
+<a href="http://homepages.cs.ncl.ac.uk/brian.randell/Genealogy/NameMatching.pdf">phonex</a>,
+trying to improve a little based on common names.</p><h3 id="eudex">Eudex</h3><p>Another interesting candidate is Eudex, derived from the classification of
+<a href="https://en.wikipedia.org/wiki/Pulmonic_consonant">pulmonic consonants</a>. Faster than Soundex as well. Check out the <a href="https://github.com/ticki/eudex">rust
+library</a> or the <a href="https://github.com/jprante/elasticsearch-analysis-phonetic-eudex/blob/master/src/main/java/org/xbib/elasticsearch/index/analysis/phonetic/Eudex.java">java port</a>.</p><h2 id="phonetic-algorithm-as-a-building-block">Phonetic algorithm as a building block</h2><p>Spell checkers sometimes uses phonetic algorithms as a building block (along
+with customized spell checking implementations nowadays), with the
+difference to compare the input against a set of stored terms. For example
+Elasticsearch uses such a functionality to check all configuration settings
+and suggest alternative in case an invalid setting is specified.</p><p>An interesting variation of this is not using the regular edit distance, but
+taking the position of keys on the keyboard into account (making this more
+complex, if you do not know the user’s keyboard). The most common use-case
+of this is probably known as <code>T9</code> among the elderly… Take a look at the
+<a href="https://abydos.readthedocs.io/en/latest/abydos.distance.html">abydos distance
+package</a> that
+features some algorithms that take the keyboard into account when measuring
+the distance between two strings.</p><p>There is also a couple of new projects like
+<a href="https://github.com/neuspell/neuspell">NeuSpell</a>, a neural spelling
+correction toolkit.</p><h2 id="summary">Summary</h2><p>I intentionally also posted the publish times of those algorithms here.
+Nothing of this is new or fancy, most of this is decades old, yet it does
+not see too much usage. One should also keep in mind that the use-case is
+more narrow than expected, as this is mostly useful for names - but keep in
+mind that product names can also be names, and some of the algorithms have
+been changed to support a wider model.</p><p>You can also see this focuses a lot on western languages. A few of those
+algorithms have a bit more support for non-western languages, but I rarely
+see this in the wild.</p><p>I hope you enjoyed our ride across the different phonetic search algorithms
+and keep this in mind when someone asks you to implement a fuzzy search…
+ask for the use-case first!</p><p>If there are fancy or new algorithms and implementations I forgot about over
+here, please give me a ping and I am happy to add them.</p><h2 id="resources">Resources</h2><ul><li><a href="https://github.com/tdebatty/java-string-similarity">java-string-similarity</a> - a library implementing different string similarity and distance measures</li><li>Introduction into Information Retrieval (Manning, Raghavan, Schütze): <a href="https://nlp.stanford.edu/IR-book/html/htmledition/phonetic-correction-1.html">Phonetic Correction</a></li><li>Zobel and Dart: <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.18.2138&amp;rep=rep1&amp;type=pdf">Phonetic String Matching: Lessons from Information Retrieval</a></li><li><a href="https://www.diva-portal.org/smash/get/diva2:1116701/FULLTEXT01.pdf">Weighting Edit Distance to Improve Spelling Correction in Music Entity Search</a></li><li><a href="https://www.sciencedirect.com/science/article/pii/0304397592901434">Approximate string-matching with q-grams and maximal matches</a></li><li><a href="https://web.archive.org/web/20180725122832/http://ifl.phil-fak.uni-koeln.de/sites/linguistik/phonetik/import/Phonetik_Files/Allgemeine_Dateien/Martin_Wilz.pdf">Aspekte der Kodierung phonetischer Ähnlichkeiten in deutschen
+Eigennamen</a></li><li><a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.842.5353&amp;rep=rep1&amp;type=pdf">Improved An Algorithm For Arabic Name Matching</a></li><li><a href="https://stevemorse.org/phonetics/bmpm2.htm">Phonetic Matching: A Better Soundex</a></li><li><a href="https://caversham.otago.ac.nz/files/working/ctp060902.pdf">Caverphone 1.0 specification</a></li><li><a href="https://caversham.otago.ac.nz/files/working/ctp150804.pdf">Caverphone 2.0 specification</a></li><li><a href="https://yomguithereal.github.io/talisman/phonetics/">phonetics</a>, a node
+library implement various Soundex like algorithms</li><li><a href="https://cran.r-project.org/web/packages/phonics/vignettes/phonics.html">phonics R package</a>, providing a variety of phonetic indexing algorithms in the <code>R</code> programming language</li><li><a href="https://www.aclweb.org/anthology/K18-1043/">DIMSIM: An Accurate Chinese Phonetic Similarity Algorithm Based on Learned High Dimensional Encoding</a>, plus <a href="https://github.com/System-T/DimSim">python implementations</a></li><li>python implementation of a <a href="https://github.com/roddar92/russian_soundex">Russian Soundex algorithm</a></li><li>python <a href="https://abydos.readthedocs.io/en/latest/abydos.phonetic.html">abydos phonetic package</a></li></ul><h2 id="final-remarks">Final remarks</h2><p>If you made it down here, wooow! Thanks for sticking with me. You can follow
+or ping me on <a href="https://twitter.com/spinscale">twitter</a>,
+<a href="https://github.com/spinscale">GitHub</a> or reach me via Email (just to tell
+me, you read this whole thing :-).</p><p>If there is anything to correct, drop me a note, and I am happy to do so
+and append to this post!</p><p>Same applies for questions. If you have question, go ahead and ask!</p><p>If you want me to speak about this, drop me an email!</p><br><p><a href="https://spinscale.de/posts">Back to posts</a></p></div><br><div class="disqus"></div></div></div></section></body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

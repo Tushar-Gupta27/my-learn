@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "staging"
+  cluster:
+    server: "https://rancher.citymall.live/k8s/clusters/c-xg4cg"
+
+users:
+- name: "staging"
+  user:
+    token: "kubeconfig-u-dqn6kydejk79tll:hwcl4rs44d2fqsf2q7s2bl4bnlxg58t88p9484vs7qdqx4c6mkgvsf"
+
+
+contexts:
+- name: "staging"
+  context:
+    user: "staging"
+    cluster: "staging"
+
+current-context: "staging"

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "docker-trials"
+		},
+		{
+			"path": "go"
+		},
+		{
+			"path": "trials"
+		}
+	]
+}
