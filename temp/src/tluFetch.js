@@ -82,7 +82,6 @@ const getMatrixDrivingDistance = async ({
   separateOriginDest = false,
 }) => {
   let response;
-  const googleMapsKeys = ["AIzaSyDAOBW-obxLzFkbKpPSRE4NpLRhnv_Scqg"];
   const host = "https://maps.googleapis.com/maps/api/distancematrix/json?";
   let origins = "";
   let destinations = "";
