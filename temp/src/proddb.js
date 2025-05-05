@@ -1,6 +1,5 @@
 const pgp = require("pg-promise")();
-const databaseUrl =
-  "postgres://tushar_gupta:fekrhiehiqwheie243324ufbcjwjf@cmdb.citymall.live/cmdb";
+const databaseUrl = "";
 
 const db = pgp({
   connectionString: databaseUrl,
