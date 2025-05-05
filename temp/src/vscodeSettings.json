@@ -1,0 +1,145 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontSize": 10,
+    "C_Cpp.updateChannel": "Insiders",
+    "code-runner.runInTerminal": true,
+    "easy-highlight.highlightColor": "#ff0000",
+    "editor.formatOnSave": true,
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.autoSave": "afterDelay",
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "workbench.sideBar.location": "right",
+    "html.format.contentUnformatted": "",
+    "diffEditor.wordWrap": "on",
+    "thunder-client.codeSnippetLanguage": "cs-httpclient",
+    "editor.codeActionsOnSave": {},
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "editor.fontFamily": "Consolas",
+    "editor.fontLigatures": false,
+    "[dart]": {
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "editor.defaultFormatter": "Dart-Code.dart-code",
+      "editor.rulers": [80],
+      "editor.selectionHighlight": false,
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.suggestSelection": "first",
+      "editor.tabCompletion": "onlySnippets",
+      "editor.wordBasedSuggestions": "off"
+    },
+    "dart.debugExternalPackageLibraries": true,
+    "dart.debugSdkLibraries": true,
+    "editor.stickyScroll.enabled": true,
+    "liveshare.accessibility.soundsEnabled": false,
+    "better-comments.tags": [
+      {
+        "tag": "!",
+        "color": "#FF2D00",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      },
+      {
+        "tag": "?",
+        "color": "#3498DB",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      },
+      {
+        "tag": "todo",
+        "color": "#FF8C00",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      },
+      {
+        "tag": "*",
+        "color": "#98C379",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      },
+      {
+        "tag": "exp",
+        "color": "#59cc06",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      },
+      {
+        "tag": "imp",
+        "color": "#ffff00",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": true
+      }
+    ],
+    "editor.accessibilitySupport": "off",
+    "workbench.colorTheme": "Andromeda Colorizer",
+    "[python]": {
+      "editor.formatOnType": true
+    },
+    "terminal.integrated.env.windows": {},
+    "editor.rename.enablePreview": false,
+    "workbench.editor.enablePreview": false,
+    "terminal.integrated.env.osx": {},
+    "[typescript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "codeium.enableConfig": {
+      "*": true
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "settingsSync.ignoredExtensions": [],
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "errorLens.enabled": true,
+    "editor.inlineSuggest.showToolbar": "always",
+    "rapidapi.terminalLink.enabled": false,
+    "security.workspace.trust.untrustedFiles": "open",
+    "[vue]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "eslint.nodePath": "~/Users/admin/dev/tl-app/.eslintrc.js",
+    "window.zoomLevel": -1,
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "github.copilot.enable": {
+      "*": false,
+      "plaintext": false,
+      "markdown": false,
+      "scminput": false,
+      "go": false
+    },
+    "editor.wordWrap": "on",
+    "git.confirmSync": false,
+    "gitlens.views.repositories.showStashes": true,
+    "json.schemas": [],
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  }
+  
