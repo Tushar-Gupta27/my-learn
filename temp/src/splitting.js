@@ -30,9 +30,7 @@ const splitItemPriority = {
   found: ["found"],
 };
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 
 function splitItemMarkingState(markingItemRow, marking_reason, newQuantity) {
   const priorities = splitItemPriority[marking_reason];

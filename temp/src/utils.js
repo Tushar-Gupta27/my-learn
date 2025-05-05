@@ -28,9 +28,7 @@ const moment = require("moment");
 
 // console.log(moment('2024-03-18'))
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 const cpCxMarkingCases = {
   found: "found",
   item_damaged: "item_damaged",

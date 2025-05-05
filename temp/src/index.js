@@ -52,9 +52,7 @@ let str2 = `https://advertiser.inmobiapis.com/tpce/v1/events/download?gpId={syst
 // console.log(str2.slice(63));
 // console.log(m("1995-12-25"))
 
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 
 let user_id = 8843075;
 user_id = user_id.toString();
@@ -124,19 +122,20 @@ db.any(
 // db.any(`select ${fields.join(",")} from orders limit 1;`).then((d) =>
 //   console.log(d)
 // );
-db.any(`select * from $(table:name) limit 1;`, { table: "tbl_user" }).then((d) =>
-  console.log("tbl_user", d)
+db.any(`select * from $(table:name) limit 1;`, { table: "tbl_user" }).then(
+  (d) => console.log("tbl_user", d)
 );
-db.any(`  SELECT 
+db.any(
+  `  SELECT 
 * 
 FROM 
 cl_vacation_log 
 where 
 team_leader_id = 'fcd145e7-3298-4ef4-a7f4-71b30b687451'
 and vacation_date = ANY(ARRAY['2023-12-16']::date[])
-and status = 'ACTIVE';`, [false]).then((d) =>
-  console.log("tester", d)
-);
+and status = 'ACTIVE';`,
+  [false]
+).then((d) => console.log("tester", d));
 
 // db.any(
 //   `SELECT id, area_name, sub_area_name, is_popular FROM area_localities WHERE LOWER(city_name) = 'agra' AND LOWER(area_name) like $1 limit 10 ;`,

@@ -1,7 +1,5 @@
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 const distanceBtwLatLng = (lat1, lon1, lat2, lon2) => {
   let p = 0.017453292519943295; // Math.PI / 180
   let c = Math.cos;
@@ -123,7 +121,6 @@ async function approveDraftAddressJob() {
 // approveDraftAddressJob();
 const ans = db
   .one(`select to_char(now(),'Dy, Mon DDth,YYYY HH12:MMA.M.');`)
-  
+
   .then((d) => console.log(d));
 module.exports = approveDraftAddressJob;
-

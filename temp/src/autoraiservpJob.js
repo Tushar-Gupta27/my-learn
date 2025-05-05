@@ -1,7 +1,5 @@
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 const _ = require("lodash");
 // const utils = require('./cl-cx-item-marking/utils');
 // const { leaders: leaderFunctions, rvpActions } = require('../../server/db');

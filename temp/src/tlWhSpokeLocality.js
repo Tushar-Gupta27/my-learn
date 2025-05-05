@@ -1,8 +1,6 @@
 // const schedule = require('node-schedule');
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 const _ = require("lodash");
 const constantTls = [
   "6a0b2c82-7c0d-4ef2-8274-090669c463e2",

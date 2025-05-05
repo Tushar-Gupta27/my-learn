@@ -4,9 +4,7 @@ const { Blob } = require("buffer");
 // const axios = require("axios");
 // // const schedule = require('node-schedule');
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 
 // const json = {
 //   params: {
@@ -31,7 +29,7 @@ const db = pgp(
 //       },
 //       {
 //         is_popular,
-        // ...rest,
+// ...rest,
 //       },
 //     ],
 //   },
@@ -345,7 +343,7 @@ db.any(
 `,
   {}
 ).then((d) => {
-  console.log(typeof d[0]['cp_db_id']);
+  console.log(typeof d[0]["cp_db_id"]);
 });
 
 // db.any(`UPDATE

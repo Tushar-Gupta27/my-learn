@@ -2,9 +2,7 @@
 // const pgp = require("pg-promise")();
 // const db = require("../../commons/db");
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 const moment = require("moment");
 
 const limit = 1000;

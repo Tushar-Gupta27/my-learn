@@ -1,9 +1,7 @@
 const { log } = require("console");
 
 const pgp = require("pg-promise")();
-const db = pgp(
-  "postgres://tushar_gupta:ferkhfwi3948ufwke@cmdb-staging.citymall.dev/cmdb"
-);
+const db = pgp("");
 
 const CL_POLYGON_LIMIT = 100;
 const invalidOpsState = ["PENDING"];
