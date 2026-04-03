@@ -1,12 +1,12 @@
 const redis = require("redis");
 
-const redisHost = "localhost";
+const redisHost = "";
 const redisPort = "6380";
 
-const replicaClient = redis.createClient({
-  host: redisHost,
-  port: redisPort,
+const redisClient = redis.createClient({
+  url: "redis://:@localhost:6380",
   retry_strategy: function (options) {
+    console.log("options", options);
     console.log("REDIS_REPLICA_ERROR", options);
     if (options.error && options.error.code === "ECONNREFUSED") {
       // End reconnecting on a specific error and flush all commands with
@@ -28,58 +28,81 @@ const replicaClient = redis.createClient({
   },
 });
 
-replicaClient.on("error", function (data) {
-  console.error("replicaClient error:", data);
+redisClient.on("error", function (data) {
+  console.error("redisClient error:", data);
 });
 
-replicaClient.on("ready", function (data) {
-  console.log("replicaClient ready:", data);
+redisClient.on("ready", function (data) {
+  console.log("redisClient ready:", data);
 });
 
-replicaClient.on("connect", function (data) {
-  console.log("replicaClient connect:", data);
+redisClient.on("connect", function (data) {
+  console.log("redisClient connect:", data);
 });
 
-replicaClient.on("reconnecting", function (data) {
-  console.error("replicaClient reconnecting:", data);
+redisClient.on("reconnecting", function (data) {
+  console.error("redisClient reconnecting:", data);
 });
 
-replicaClient.on("end", function (data) {
-  console.error("replicaClient end:", data);
+redisClient.on("end", function (data) {
+  console.error("redisClient end:", data);
 });
 
-replicaClient.on("warning", function (data) {
-  console.error("replicaClient warning:", data);
+redisClient.on("warning", function (data) {
+  console.error("redisClient warning:", data);
 });
 
-class RedisJsonStore {
-  async fetchFromRedis(key) {
-    return new Promise((resolve) => {
-      redisClientReplica.get(key, (err, value) => {
-        if (err) {
-          console.error(err);
-          resolve(null);
-          return;
-        }
-
-        resolve(JSON.parse(value));
-      });
-    });
-  }
-
-  async saveInRedis(key, value, ttlSecs) {
-    await new Promise((resolve) => {
-      const b = redisClient.batch();
-      b.set(key, value);
-      b.expire(key, ttlSecs);
-      b.exec(function (err) {
-        if (err) console.error(err);
-        resolve();
-      });
+redisClient.on("close", function (data) {
+  console.error("redisClient close:", data);
 });
-  }
+
+// class RedisJsonStore {
+//   async fetchFromRedis(key) {
+//     return new Promise((resolve) => {
+//       redisClient.get(key, (err, value) => {
+//         if (err) {
+//           console.error(err);
+//           resolve(null);
+//           return;
+//         }
+
+//         resolve(JSON.parse(value));
+//       });
+//     });
+//   }
+
+//   async saveInRedis(key, value, ttlSecs) {
+//     await new Promise((resolve) => {
+//       const b = redisClient.batch();
+//       b.set(key, value);
+//       b.expire(key, ttlSecs);
+//       b.exec(function (err) {
+//         if (err) console.error(err);
+//         resolve();
+//       });
+//     });
+//   }
+//   async getRedis(key) {
+//     return redisClient.get(key);
+//   }
+// }
+
+// const redisInstance = new RedisJsonStore();
+
+// redisInstance.getRedis("name").then((data) => {
+//   console.log(data);
+// });
+async function run() {
+  await redisClient.connect();
+  // await redisClient.set("name2", "tushar2");
+  // console.log(await redisClient.keys("*"));
+  // await redisClient.expire("score", 100);
+  // console.log(await redisClient.ttl("score"));
+  // console.log(await redisClient.get("score"));
+  // console.log("Response", res);
+
+  const res = await redisClient.multi().incr("score").pTTL("score").exec();
+  console.log(res);
 }
-
-const redis = new RedisJsonStore();
-
-module.exports = RedisJsonStore;
+// module.exports = RedisJsonStore;
+run();

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>SSE</h1>
+    <button id="start">start</button>
+    <button id="close">close</button>
+    <div id="sse"></div>
+  </body>
+  <script>
+    let source = null;
+    const startBtn = document.getElementById("start");
+    const closeBtn = document.getElementById("close");
+    startBtn.onclick = function () {
+      source = new EventSource("http://localhost:3000/sse");
+      const sse = document.getElementById("sse");
+      source.addEventListener("main", (event) => {
+        console.log("main event", event, event.data, event.lastEventId);
+        const ele = document.createElement("p");
+        ele.innerText = event.data;
+        sse.appendChild(ele);
+      });
+      source.onerror = function (event) {
+        console.log("error", event);
+      };
+    };
+    closeBtn.onclick = function () {
+      if (typeof source == "object" && source instanceof EventSource) {
+        source.close();
+        source = null;
+        const ele = document.createElement("p");
+        ele.innerText = "Goodbye";
+        sse.appendChild(ele);
+      }
+    };
+  </script>
+</html>

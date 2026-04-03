@@ -8,5 +8,21 @@
   <body>
     <h1>Hellloo</h1>
     <img src="http://localhost:8000/images/temp1.jpeg" />
+    <div id="blogbody"></div>
+    <video
+      controls
+      muted
+      src="http://localhost:8000/get-video-stream"
+      style="width: 300px"
+    ></video>
   </body>
+  <script>
+    const blogbody = {
+      blog1: `<h2>Blog Body</h2><img src="./testing/images/temp1.jpeg" alt="bodyimage1"/>`,
+      blog2: `<h2 style="color: red">Blog Body</h2><img src="./testing/images/temp2.jpeg" alt="bodyimag2e"/>`,
+    };
+    (function () {
+      document.getElementById("blogbody").innerHTML = blogbody["blog2"];
+    })();
+  </script>
 </html>

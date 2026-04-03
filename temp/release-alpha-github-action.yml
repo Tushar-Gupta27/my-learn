@@ -1,0 +1,131 @@
+name: Release to Google Play Store
+on:
+  push:
+    branches:
+      - release/alpha
+
+jobs:
+  alpha-distribution:
+    runs-on: [self-hosted, linux, x64, apps]
+    env:
+      ANDROID_SDK_ROOT: /home/ubuntu/AndroidSDK
+      ANDROID_NDK_ROOT: /home/ubuntu/AndroidSDK/ndk-bundle
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    name: Alpha Distribution
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Use Node 18x Runtime
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        
+    - name: Install GH CLI
+      uses: dev-hanz-ops/install-gh-cli-action@v0.1.0
+      with:
+        gh-cli-version: 2.32.0
+
+    - name: Load variables to working env
+      id: vars
+      run: |
+        chmod +x get_android_version_name_tag.sh 
+        echo "tag=$(./get_android_version_name_tag.sh)" >> $GITHUB_OUTPUT
+        echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      env:
+          GITHUB_TOKEN: ${{ github.token }}
+   
+    - name: Check if any previous PR is awaiting to be merged
+      id: pr
+      run: |
+        pr_check=$(gh pr list -B develop -H "${{ steps.vars.outputs.branch }}")
+        if [ -n "$pr_check" ]; then
+          echo "pr_exists=true" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        echo "pr_exists=false" >> $GITHUB_OUTPUT
+
+
+    - name: Install Yarn
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      run: sudo npm install -g yarn
+
+    - name: Install node modules
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      run: |
+        YARN_CHECKSUM_BEHAVIOR=update YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install
+
+    - name: Make Gradlew Executable
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      run: cd android && chmod +x ./gradlew && cd ..
+
+    - name: Build Android App Bundle
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      run: |
+        yarn bundle:ci
+
+    # uploading live build to app tester - for debugging purposes
+    # - if: ${{ github.ref == 'refs/heads/ss/master/fix-alpha-apk-builder' }}
+    #   name: Upload LIVE_ALPHA_BUILD_LOGS artifact to Firebase App Distribution
+    #   uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+    #   with:
+    #     appId: ${{secrets.FIREBASE_APP_ID}}
+    #     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+    #     groups: cm_app_dist_group
+    #     file: android/app/build/outputs/bundle/release/app-release.aap
+    #     releaseNotes: LIVE_ALPHA_BUILD_LOGS${{ github.event.head_commit.message }}
+
+    - name: Push to Alpha track
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.PLAY_API_CREDENTIAL_FILE_CONTENT }}
+        packageName: com.citymall.app
+        releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+        track: alpha
+        status: inProgress
+        userFraction: 0.9
+        whatsNewDirectory: android/release-notes/
+
+    - name: Bump Android version numbers
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      run: yarn bump-android:all
+
+    - uses: EndBug/add-and-commit@v9 
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      with:
+        add: './.env*'
+        committer_name: GitHub Actions
+        committer_email: 41898282+github-actions[bot]@users.noreply.github.com
+        message: "[CI] Bump Android version numbers"
+        push: true
+
+    - uses: ncipollo/release-action@v1
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      with:
+        allowUpdates: true
+        makeLatest: true
+        name: PS Release - ${{steps.vars.outputs.tag}}
+        tag: ${{steps.vars.outputs.tag}}
+        generateReleaseNotes: true
+
+    - name: Create Pull Request
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      id: cpr
+      run: echo "pr=$(gh pr create -B develop -H ${{ steps.vars.outputs.branch }} --title 'Merge Release ${{steps.vars.outputs.tag}} into develop' --body '')" >> $GITHUB_OUTPUT
+      env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Slack Notification
+      if: ${{steps.pr.outputs.pr_exists == 'false'}}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: 
+        SLACK_COLOR: "#F7F7F7"
+        SLACK_USERNAME: AlphaLogBot
+        SLACK_ICON_EMOJI: ":cmlogo:"
+        SLACK_TITLE: "Merge Release ${{steps.vars.outputs.tag}} into develop"
+        SLACK_MESSAGE: "Pull Request URL -  ${{steps.cpr.outputs.pr}} :github:"
+        SLACK_FOOTER: ""
+        MSG_MINIMAL: true

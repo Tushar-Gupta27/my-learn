@@ -33,12 +33,15 @@ for (let i = 0; i < 6; i++) {
   console.log(
     "DATES",
     i,
-    moment(moment("2023-05-01").add(i, "months").toDate()).format("YYYY-MM"),
-    
+    moment(moment("2023-05-01").add(i, "months").toDate()).format("YYYY-MM")
   );
-  }
+}
 
-console.log('DATES',moment().startOf('month'),moment().endOf('month').add(1,'days'));
+console.log(
+  "DATES",
+  moment().startOf("month"),
+  moment().endOf("month").add(1, "days")
+);
 const validator = (errors) => {
   // let errors = [];
   console.log(errors["list"]);
@@ -103,11 +106,23 @@ for (let i = 0; i < 7; i++) {
 }
 console.log(inputDates);
 
-console.log(inputDates.sort((a,b)=>moment(a).isAfter(moment(b)) ? -1 : 1));
-console.log(moment().format())
+console.log(inputDates.sort((a, b) => (moment(a).isAfter(moment(b)) ? -1 : 1)));
+console.log(moment().format());
 
-console.log(moment('2023-11-22').format('DD-MMM-YY'))
-console.log(moment().isAfter(moment()))
+console.log(moment("2023-11-22").format("DD-MMM-YY"));
+console.log(moment().isAfter(moment()));
 
+console.log(
+  "CHECKING",
+  moment("2025-06-06T05:22:00.000Z")
+    .utcOffset("+05:30")
+    .isSame(
+      moment("2025-06-06T18:30:00.000Z").startOf("day").utcOffset("+05:30"),
+      "day"
+    )
+);
 
-
+console.log(
+  "new check",
+  moment("2025-12-16T05:11:27.000Z").utcOffset("+05:30").format("YYYY-MM-DD")
+);

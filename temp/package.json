@@ -13,6 +13,7 @@
     "@json2csv/plainjs": "^7.0.3",
     "@opensearch-project/opensearch": "^2.13.0",
     "axios": "^1.6.0",
+    "cheerio": "^1.1.0",
     "config": "^3.3.12",
     "crypto": "^1.0.1",
     "csv-parse": "^5.4.0",
@@ -23,7 +24,10 @@
     "lodash": "^4.17.21",
     "moment": "^2.9.4",
     "path": "^0.12.7",
+    "paytmchecksum": "^1.5.1",
     "pg-promise": "^11.5.0",
+    "puppeteer": "^24.18.0",
+    "puppeteer-core": "^24.18.0",
     "qrcode": "^1.5.4",
     "redis": "^4.7.0"
   }

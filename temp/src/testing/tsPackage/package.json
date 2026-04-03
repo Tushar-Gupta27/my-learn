@@ -1,0 +1,15 @@
+{
+  "name": "tspackage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

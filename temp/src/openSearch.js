@@ -1,4 +1,4 @@
-//PASSWORD - Tushar@27
+  //PASSWORD - Tushar@27
 //If running on docker ensure 4 GBs of memory for docker desktop
 //docker run -it -p 9210:9200 -p 9610:9600 -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Tushar@27 -e "discovery.type=single-node"  --name opensearch-node opensearchproject/opensearch:latest
 //Indexes -> books

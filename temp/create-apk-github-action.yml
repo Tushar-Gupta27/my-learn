@@ -1,0 +1,196 @@
+name: Android Prod with NW Logging
+on:
+  push:
+    branches:
+      - apk/live
+      - apk/staging
+      - apk/preprod
+
+jobs:
+  build-android:
+    runs-on: [self-hosted, linux, x64, apps]
+    # runs-on: ubuntu-latest
+    # runs-on: catthehacker/ubuntu:act-latest
+    # runs-on: node:16-buster-slim
+    env:
+      ANDROID_SDK_ROOT: /home/ubuntu/AndroidSDK
+      ANDROID_NDK_ROOT: /home/ubuntu/AndroidSDK/ndk-bundle
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Apply Git Patch
+        run: |
+          git apply patches/network-logger.patch
+      
+      - if: ${{ github.ref == 'refs/heads/apk/preprod' }}
+        name: Apply Preprod Patch
+        run: |
+          git apply patches/preprod.patch
+      
+      - name: Use Node 21x Runtime
+        uses: actions/setup-node@v3
+        with:
+          node-version: "21.x"
+  
+      - name: Install Yarn
+        run: |
+          npm install -g corepack
+          corepack enable
+          corepack prepare yarn@4.2.2 --activate
+          yarn --version # Validate the version installed
+
+      - name: yarn cache clean
+        run: yarn cache clean --all
+      - name: Install yarn dependencies
+        if: ${{ success() }}
+        run: |
+          yarn cache clean --all
+          YARN_CHECKSUM_BEHAVIOR=update YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install
+
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+
+      - name: Run jetifier
+        run: |
+          npx jetify
+
+      - name: Set Build Variant variables
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/heads/apk/live" ]]; then
+            echo "BUILD_VARIANT=LIVE" >> $GITHUB_ENV
+            echo "SLACK_COLOR=#2EB886" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF}" == "refs/heads/apk/staging" ]]; then
+            echo "BUILD_VARIANT=STAGING" >> $GITHUB_ENV
+            echo "SLACK_COLOR=#E5A72F" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF}" == "refs/heads/apk/preprod" ]]; then
+            echo "BUILD_VARIANT=PREPROD" >> $GITHUB_ENV
+            echo "SLACK_COLOR=#E5A72F" >> $GITHUB_ENV
+          else
+            echo "BUILD_VARIANT=UNKNOWN" >> $GITHUB_ENV
+            echo "SLACK_COLOR=#808080" >> $GITHUB_ENV
+          fi
+
+      #  creating build for live
+      - if: ${{ github.ref == 'refs/heads/apk/live' }}
+        name: Build Android LIVE
+        run: |
+          cd android && ENVFILE=.env.production ./gradlew app:assembleRelease
+
+      #  creating build for staging
+      - if: ${{ github.ref == 'refs/heads/apk/staging' }}
+        name: Build Android STAGING
+        run: |
+          cd android && ENVFILE=.env.staging ./gradlew app:assembleRelease
+      - if: ${{ github.ref == 'refs/heads/apk/preprod' }}
+        name: Build Android Preprod
+        run: |
+          cd android && ENVFILE=.env.preprod ./gradlew app:assembleRelease
+
+      # uploading live build to app tester
+      - if: ${{ github.ref == 'refs/heads/apk/live' }}
+        id: live_upload
+        name: Upload LIVE_NETWORK_LOGGER artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: cm_app_dist_group
+          file: android/app/build/outputs/apk/release/app-release.apk
+          releaseNotes: LIVE_BUILD_LOGS${{ github.event.head_commit.message }}
+
+      # uploading staging build to app tester
+      - if: ${{ github.ref == 'refs/heads/apk/staging' }}
+        id: staging_upload
+        name: Upload STAGING_NETWORK_LOGGER artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: cm_app_dist_group
+          file: android/app/build/outputs/apk/release/app-release.apk
+          releaseNotes: STAGING_BUILD_${{ github.event.head_commit.message }}
+      - if: ${{ github.ref == 'refs/heads/apk/preprod' }}
+        id: preprod_upload
+        name: Upload PREPROD_NETWORK_LOGGER artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: cm_app_dist_group
+          file: android/app/build/outputs/apk/release/app-release.apk
+          releaseNotes: PREPROD_BUILD_${{ github.event.head_commit.message }}
+
+      - name: Uninstall Yarn
+        if: ${{ success() }}
+        run: sudo npm uninstall -g yarn
+
+      # Set Release Notes variable
+      - name: Set Release Notes
+        run: echo "RELEASE_NOTES=${{ github.ref == 'refs/heads/apk/live' && format('LIVE_BUILD_LOGS{0}', github.event.head_commit.message) || format('STAGING_BUILD_{0}', github.event.head_commit.message) }}" >> $GITHUB_ENV
+
+      # Export Build Details
+      - name: Export Build Details
+        run: |
+          echo "FB_CONSOLE_URI=${{ steps.live_upload.outputs.FIREBASE_CONSOLE_URI || steps.staging_upload.outputs.FIREBASE_CONSOLE_URI }}" >> $GITHUB_ENV
+          echo "FB_TESTING_URI=${{ steps.live_upload.outputs.TESTING_URI || steps.staging_upload.outputs.TESTING_URI }}" >> $GITHUB_ENV
+          echo "FB_BINARY_URI=${{ steps.live_upload.outputs.BINARY_DOWNLOAD_URI || steps.staging_upload.outputs.BINARY_DOWNLOAD_URI }}" >> $GITHUB_ENV
+          echo "AS_AUTHOR=${{ github.event.head_commit.author.name }}" >> $GITHUB_ENV
+          echo "AS_COMMIT_URL=${{ github.event.head_commit.url }}" >> $GITHUB_ENV
+          echo "AS_COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+          echo "AS_MESSAGE=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
+
+      # deleting release/* branch after build, delete branch irrespective of build status
+      - name: Delete branches
+        # if: always()
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{github.token}}
+          branches: live,staging
+          prefix: apk/
+          soft_fail: true
+
+      - name: Slack Notify ${{ env.BUILD_VARIANT }}
+        if: always() # run irrespective of job result
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: workflow,job,commit,repo,ref,took
+          custom_payload: |
+            {
+              "attachments": [{
+                "color": "${{ job.status == 'success' && 'good' || job.status == 'failure' && 'danger' || 'warning' }}",
+                "blocks": [
+                  { "type": "header",
+                    "text": { "type": "plain_text",
+                      "text": `Partner - Android Network Logger - ${{ env.BUILD_VARIANT }} ${'${{ job.status }}' === 'success' ? '✅' : ( '${{ job.status }}' === 'failure' ? '❌' : '⚠️' )}` }
+                  },
+
+                  { "type": "divider" },
+
+                  { "type": "section",
+                    "text": { "type": "mrkdwn",
+                      "text": `• *Release Notes*: ${process.env.RELEASE_NOTES}${process.env.FB_CONSOLE_URI ? '\n• *Firebase Console*: <' + process.env.FB_CONSOLE_URI + '|Link>' : ''}${process.env.FB_TESTING_URI ? '\n• *Testers*: <' + process.env.FB_TESTING_URI + '|Link>' : ''}${process.env.FB_BINARY_URI ? '\n• *Download*: <' + process.env.FB_BINARY_URI + '|Link>' : ''}\n• *Duration*: ${process.env.AS_TOOK}\n• *Commit*: <${process.env.AS_COMMIT_URL}|${process.env.AS_COMMIT_SHA}>${process.env.AS_AUTHOR ? '\n• *Author*: ' + process.env.AS_AUTHOR : ''}${process.env.AS_MESSAGE ? '\n• *Notes*: ' + process.env.AS_MESSAGE : ''}` }
+                  },
+
+                  {
+                    "type": "actions",
+                    elements: (() => {
+                      const btns = [{
+                        type: "button",
+                        text: { type: "plain_text", text: "View build" },
+                        url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+                      }];
+                      if (process.env.FB_TESTING_URI)
+                        btns.push({ type: "button", text: { type: "plain_text", text: "App Tester Link" }, style: "primary", url: process.env.FB_TESTING_URI });
+                      if (process.env.FB_BINARY_URI)
+                        btns.push({ type: "button", text: { type: "plain_text", text: "Download APK" }, url: process.env.FB_BINARY_URI });
+                      return btns;
+                    })()
+                  }
+                ]
+              }]
+            }
+        env:
+          # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ''   # keep secret-based
+
