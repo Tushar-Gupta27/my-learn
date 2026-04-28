@@ -1,0 +1,14 @@
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "age": 30,
+    "isSubscriber": true,
+    "hobbies": [
+        "reading",
+        "cycling"
+    ],
+    "address": {
+        "street": "123 Main St",
+        "city": "Anytown"
+    }
+}
